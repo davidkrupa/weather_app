@@ -1,19 +1,24 @@
 import React from "react";
 
+import sunImage from "../assets/113.png";
+
 const Locations = () => {
   const locations = ["New York", "Paris", "Berlin"];
   return (
-    <div className="flex gap-4 py-4">
-      {locations.map((item, index) => (
-        <div
-          className="flex flex-col items-center gap-3 shadow-md p-3 rounded-md"
-          key={`location-${index}`}
-        >
-          <h4>{item}</h4>
-          <div className="h-24 w-24">Image</div>
-          <h5>35C / 90F</h5>
-        </div>
-      ))}
+    <div className="flex flex-col items-center px-4">
+      <h4>Previously Searched Locations:</h4>
+      <div className="flex flex-wrap gap-4 py-4">
+        {locations.map((item, index) => (
+          <div
+            className="flex flex-col flex-1 items-center gap-2 shadow-md py-3 px-12 rounded-md bg-sky-100 bg-opacity-20"
+            key={`location-${index}`}
+          >
+            <img src={sunImage} />
+            <h4 className="font-medium text-lg">{item}</h4>
+            <h5>35C / 90F</h5>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
