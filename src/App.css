@@ -5,3 +5,7 @@
 .forecast-btn {
   @apply px-6 py-1 bg-slate-100 hover:bg-slate-900 hover:text-slate-100 rounded-full text-slate-900 text-sm;
 }
+
+.wind-compass {
+  @apply w-8 h-8 my-4;
+}

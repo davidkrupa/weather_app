@@ -1,7 +1,7 @@
 export const weatherOptions = {
   method: "GET",
   headers: {
-    "X-RapidAPI-Key": process.env.RAPID_KEY,
+    "X-RapidAPI-Key": import.meta.env.VITE_RAPID_KEY,
     "X-RapidAPI-Host": "weatherapi-com.p.rapidapi.com",
   },
 };
