@@ -10,12 +10,14 @@ import {
   BsArrowDownRight,
 } from "react-icons/bs";
 
-import sunImage from "../assets/113.png";
-import { fetchData, weatherOptions } from "../utils/fetchData";
+import { fetchData, weatherOptions, getIpAddress } from "../utils/fetchData";
 
 const Search = () => {
   const [weatherData, setWeatherData] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const [ip, setIp] = useState("");
   const { current, location } = weatherData;
+  const baseUrl = "https://weatherapi-com.p.rapidapi.com/";
 
   const reducedWindDirection =
     current?.wind_dir?.length < 3
@@ -34,14 +36,25 @@ const Search = () => {
   };
 
   useEffect(() => {
-    const baseUrl = "https://weatherapi-com.p.rapidapi.com/";
-    const getLocationWeather = async () => {
-      const locationWeatherUrl = `${baseUrl}current.json?q=New%20York`;
-      const data = await fetchData(locationWeatherUrl, weatherOptions);
-      setWeatherData(data);
+    const locationWeatherUrl = `${baseUrl}current.json?q=New%20York`;
+    getLocationWeather(locationWeatherUrl);
+    const currentIpAddress = async () => {
+      const data = await getIpAddress();
+      setIp(data);
     };
-    getLocationWeather();
+    currentIpAddress();
   }, []);
+
+  const handleSearch = () => {
+    const correctFormatSearchQuery = searchQuery.split(" ").join("%20"); // encodeURI may change state
+    const locationWeatherUrl = `${baseUrl}current.json?q=${correctFormatSearchQuery}`;
+    getLocationWeather(locationWeatherUrl);
+  };
+
+  const getLocationWeather = async (locationWeatherUrl) => {
+    const data = await fetchData(locationWeatherUrl, weatherOptions);
+    setWeatherData(data);
+  };
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -66,7 +79,6 @@ const Search = () => {
               <h4>Weather</h4>
             </div>
             <div className="flex flex-col justify-end items-center gap-4">
-              {/* <windCompass.N className="w-8 h-8 my-4" /> */}
               {windCompass[reducedWindDirection]}
               <h4>Wind</h4>
             </div>
@@ -74,13 +86,23 @@ const Search = () => {
         </div>
       ) : (
         <div className="flex justify-center items-center flex-wrap p-8 gap-24">
-          <h2 className="text-6xl font-bold">Loading</h2>
+          <h2 className="text-6xl font-bold">Loading...</h2>
         </div>
       )}
 
       <div className="flex flex-col w-4/5 sm:flex-row items-center justify-center">
-        <input className="shadow-md rounded-full w-full sm:w-4/5 lg:w-1/2 py-2 px-5 z-10" />
-        <button className="py-2 px-8 my-2 bg-sky-500 text-slate-100 font-medium rounded-full sm:rounded-l-none sm:rounded-r-full relative sm:-left-4">
+        <input
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="shadow-md rounded-full w-full sm:w-4/5 lg:w-1/2 py-2 px-5 z-10"
+        />
+        <button
+          type="button"
+          onClick={() => {
+            handleSearch();
+          }}
+          className="py-2 px-8 my-2 bg-sky-500 text-slate-100 font-medium rounded-full sm:rounded-l-none sm:rounded-r-full relative sm:-left-4"
+        >
           Search
         </button>
       </div>

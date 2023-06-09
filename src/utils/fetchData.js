@@ -12,3 +12,10 @@ export const fetchData = async (url, options) => {
 
   return data;
 };
+
+export const getIpAddress = async () => {
+  const response = await fetch("https://api.ipify.org/?format=json");
+  const data = await response.json();
+
+  return data.ip;
+};
