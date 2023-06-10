@@ -15,7 +15,6 @@ import { fetchData, weatherOptions, getIpAddress } from "../utils/fetchData";
 const Search = () => {
   const [weatherData, setWeatherData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
-  const [ip, setIp] = useState("");
   const { current, location } = weatherData;
   const baseUrl = "https://weatherapi-com.p.rapidapi.com/";
 
@@ -36,25 +35,33 @@ const Search = () => {
   };
 
   useEffect(() => {
-    const locationWeatherUrl = `${baseUrl}current.json?q=New%20York`;
-    getLocationWeather(locationWeatherUrl);
-    const currentIpAddress = async () => {
-      const data = await getIpAddress();
-      setIp(data);
+    const currentLocationWeather = async () => {
+      const ipAddress = await getIpAddress();
+      const locationUrl = `${baseUrl}ip.json?q=${ipAddress}`;
+      const currentLocationData = await fetchData(locationUrl, weatherOptions);
+
+      const correctFormatSearchQuery = currentLocationData.city
+        .split(" ")
+        .join("%20");
+      const locationWeatherUrl = `${baseUrl}current.json?q=${correctFormatSearchQuery}`;
+      const currentLocationWeatherData = await fetchData(
+        locationWeatherUrl,
+        weatherOptions
+      );
+      setWeatherData(currentLocationWeatherData);
     };
-    currentIpAddress();
+
+    currentLocationWeather();
   }, []);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     const correctFormatSearchQuery = searchQuery.split(" ").join("%20"); // encodeURI may change state
     const locationWeatherUrl = `${baseUrl}current.json?q=${correctFormatSearchQuery}`;
-    getLocationWeather(locationWeatherUrl);
-  };
 
-  const getLocationWeather = async (locationWeatherUrl) => {
     const data = await fetchData(locationWeatherUrl, weatherOptions);
     setWeatherData(data);
   };
+  console.log(weatherData);
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -84,9 +91,16 @@ const Search = () => {
             </div>
           </div>
         </div>
+      ) : weatherData.error ? (
+        <div className="flex justify-center items-center flex-col  p-8 gap-12">
+          <h2 className="text-4xl font-bold text-center">
+            Something went wrong <br /> please try again.
+          </h2>
+          <h4>Error: {weatherData.error.message}</h4>
+        </div>
       ) : (
         <div className="flex justify-center items-center flex-wrap p-8 gap-24">
-          <h2 className="text-6xl font-bold">Loading...</h2>
+          <h2 className="text-6xl font-bold">Loading weather...</h2>
         </div>
       )}
 
