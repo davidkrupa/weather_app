@@ -12,7 +12,7 @@ import {
 
 import { fetchData, weatherOptions, getIpAddress } from "../utils/fetchData";
 
-const Search = () => {
+const Search = ({ previousLocations, setPreviousLocations }) => {
   const [weatherData, setWeatherData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const { current, location } = weatherData;
@@ -60,8 +60,12 @@ const Search = () => {
 
     const data = await fetchData(locationWeatherUrl, weatherOptions);
     setWeatherData(data);
+    const searchedLocations = [data, ...previousLocations];
+    setPreviousLocations(searchedLocations);
+    localStorage.setItem("locations", JSON.stringify(searchedLocations));
+    const test = localStorage.getItem("locations");
+    console.log(test);
   };
-  console.log(weatherData);
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -118,6 +122,15 @@ const Search = () => {
           className="py-2 px-8 my-2 bg-sky-500 text-slate-100 font-medium rounded-full sm:rounded-l-none sm:rounded-r-full relative sm:-left-4"
         >
           Search
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            localStorage.clear();
+          }}
+          className="py-2 px-8 my-2 bg-sky-500 text-slate-100 font-medium rounded-full sm:rounded-l-none sm:rounded-r-full relative sm:-left-4"
+        >
+          Clear Storage
         </button>
       </div>
     </div>

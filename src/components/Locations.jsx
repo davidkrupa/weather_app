@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import sunImage from "../assets/113.png";
 
-const Locations = () => {
+const Locations = ({ previousLocations, setPreviousLocations }) => {
   const locations = ["New York", "Paris", "Berlin"];
+
+  useEffect(() => {
+    const localStorageData = localStorage.getItem("locations");
+  }, []);
   return (
     <div className="flex flex-col items-center px-4">
       <h4>Previously Searched Locations:</h4>
