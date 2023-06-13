@@ -18,6 +18,8 @@ const Search = ({ previousLocations, setPreviousLocations }) => {
   const { current, location } = weatherData;
   const baseUrl = "https://weatherapi-com.p.rapidapi.com/";
 
+  console.log(previousLocations);
+
   const reducedWindDirection =
     current?.wind_dir?.length < 3
       ? current?.wind_dir
@@ -60,11 +62,28 @@ const Search = ({ previousLocations, setPreviousLocations }) => {
 
     const data = await fetchData(locationWeatherUrl, weatherOptions);
     setWeatherData(data);
-    const searchedLocations = [data, ...previousLocations];
+
+    let searchedLocations;
+    if (previousLocations?.length === 0 || previousLocations === null) {
+      searchedLocations = [data];
+    } else {
+      if (
+        previousLocations.some(
+          (item) => item.location.name === data.location.name
+        )
+      ) {
+        const reducedLocationsData = previousLocations.filter(
+          (item) => item.location.name !== data.location.name
+        );
+        searchedLocations = [data, ...reducedLocationsData];
+      } else {
+        searchedLocations = [data, ...previousLocations];
+      }
+    }
+
     setPreviousLocations(searchedLocations);
     localStorage.setItem("locations", JSON.stringify(searchedLocations));
-    const test = localStorage.getItem("locations");
-    console.log(test);
+    const test = JSON.parse(localStorage.getItem("locations"));
   };
 
   return (

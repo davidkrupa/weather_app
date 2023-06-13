@@ -6,7 +6,8 @@ const Locations = ({ previousLocations, setPreviousLocations }) => {
   const locations = ["New York", "Paris", "Berlin"];
 
   useEffect(() => {
-    const localStorageData = localStorage.getItem("locations");
+    const localStorageData = JSON.parse(localStorage.getItem("locations"));
+    setPreviousLocations(localStorageData);
   }, []);
   return (
     <div className="flex flex-col items-center px-4">
