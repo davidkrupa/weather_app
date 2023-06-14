@@ -18,12 +18,8 @@ const Search = ({ previousLocations, setPreviousLocations }) => {
   const { current, location } = weatherData;
   const baseUrl = "https://weatherapi-com.p.rapidapi.com/";
 
-  console.log(previousLocations);
-
   const reducedWindDirection =
-    current?.wind_dir?.length < 3
-      ? current?.wind_dir
-      : current?.wind_dir?.slice(1, 3);
+    current?.wind_dir?.length < 3 ? current?.wind_dir : current?.wind_dir?.slice(1, 3);
 
   const windCompass = {
     N: <BsArrowUp className="wind-compass" />,
@@ -42,14 +38,9 @@ const Search = ({ previousLocations, setPreviousLocations }) => {
       const locationUrl = `${baseUrl}ip.json?q=${ipAddress}`;
       const currentLocationData = await fetchData(locationUrl, weatherOptions);
 
-      const correctFormatSearchQuery = currentLocationData.city
-        .split(" ")
-        .join("%20");
+      const correctFormatSearchQuery = currentLocationData.city.split(" ").join("%20");
       const locationWeatherUrl = `${baseUrl}current.json?q=${correctFormatSearchQuery}`;
-      const currentLocationWeatherData = await fetchData(
-        locationWeatherUrl,
-        weatherOptions
-      );
+      const currentLocationWeatherData = await fetchData(locationWeatherUrl, weatherOptions);
       setWeatherData(currentLocationWeatherData);
     };
 
@@ -64,20 +55,20 @@ const Search = ({ previousLocations, setPreviousLocations }) => {
     setWeatherData(data);
 
     let searchedLocations;
+    console.log(searchedLocations);
     if (previousLocations?.length === 0 || previousLocations === null) {
       searchedLocations = [data];
     } else {
-      if (
-        previousLocations.some(
-          (item) => item.location.name === data.location.name
-        )
-      ) {
-        const reducedLocationsData = previousLocations.filter(
+      if (previousLocations.some((item) => item.location.name === data.location.name)) {
+        const noDuplicatesLocationsData = previousLocations.filter(
           (item) => item.location.name !== data.location.name
         );
-        searchedLocations = [data, ...reducedLocationsData];
+        searchedLocations = [data, ...noDuplicatesLocationsData];
       } else {
-        searchedLocations = [data, ...previousLocations];
+        if (previousLocations.length > 3) {
+          const reducedLocationsData = previousLocations.slice(0, 3);
+          searchedLocations = [data, ...reducedLocationsData];
+        } else searchedLocations = [data, ...previousLocations];
       }
     }
 
