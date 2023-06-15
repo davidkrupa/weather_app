@@ -55,7 +55,6 @@ const Search = ({ previousLocations, setPreviousLocations }) => {
     setWeatherData(data);
 
     let searchedLocations;
-    console.log(searchedLocations);
     if (previousLocations?.length === 0 || previousLocations === null) {
       searchedLocations = [data];
     } else {
@@ -74,7 +73,6 @@ const Search = ({ previousLocations, setPreviousLocations }) => {
 
     setPreviousLocations(searchedLocations);
     localStorage.setItem("locations", JSON.stringify(searchedLocations));
-    const test = JSON.parse(localStorage.getItem("locations"));
   };
 
   return (
@@ -132,15 +130,6 @@ const Search = ({ previousLocations, setPreviousLocations }) => {
           className="py-2 px-8 my-2 bg-sky-500 text-slate-100 font-medium rounded-full sm:rounded-l-none sm:rounded-r-full relative sm:-left-4"
         >
           Search
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            localStorage.clear();
-          }}
-          className="py-2 px-8 my-2 bg-sky-500 text-slate-100 font-medium rounded-full sm:rounded-l-none sm:rounded-r-full relative sm:-left-4"
-        >
-          Clear Storage
         </button>
       </div>
     </div>
